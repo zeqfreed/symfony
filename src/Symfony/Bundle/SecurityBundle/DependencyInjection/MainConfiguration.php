@@ -188,6 +188,7 @@ class MainConfiguration implements ConfigurationInterface
         ;
 
         $firewallNodeBuilder
+            ->scalarNode('host')->end()
             ->scalarNode('pattern')->end()
             ->booleanNode('security')->defaultTrue()->end()
             ->scalarNode('request_matcher')->end()
