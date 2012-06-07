@@ -25,6 +25,7 @@ class Route
     private $requirements;
     private $options;
     private $compiled;
+    private $hostnamePattern;
 
     static private $compilers = array();
 
@@ -42,17 +43,30 @@ class Route
      *
      * @api
      */
-    public function __construct($pattern, array $defaults = array(), array $requirements = array(), array $options = array())
+    public function __construct($pattern, array $defaults = array(), array $requirements = array(), array $options = array(), $hostnamePattern = null)
     {
         $this->setPattern($pattern);
         $this->setDefaults($defaults);
         $this->setRequirements($requirements);
         $this->setOptions($options);
+        $this->setHostnamePattern($hostnamePattern);
     }
 
     public function __clone()
     {
         $this->compiled = null;
+    }
+
+
+    public function getHostnamePattern()
+    {
+        return $this->hostnamePattern;
+    }
+
+    public function setHostnamePattern($pattern)
+    {
+        $this->hostnamePattern = $pattern;
+        return $this;
     }
 
     /**

@@ -29,6 +29,7 @@ class RouteCollection implements \IteratorAggregate
     private $resources;
     private $prefix;
     private $parent;
+    private $hostnamePattern;
 
     /**
      * Constructor.
@@ -40,6 +41,7 @@ class RouteCollection implements \IteratorAggregate
         $this->routes = array();
         $this->resources = array();
         $this->prefix = '';
+        $this->hostnamePattern = null;
     }
 
     public function __clone()
@@ -180,7 +182,7 @@ class RouteCollection implements \IteratorAggregate
      *
      * @api
      */
-    public function addCollection(RouteCollection $collection, $prefix = '')
+    public function addCollection(RouteCollection $collection, $prefix = '', $defaults = array(), $requirements = array(), $options = array(), $hostnamePattern = null)
     {
         $collection->setParent($this);
         $collection->addPrefix($prefix);
@@ -188,6 +190,11 @@ class RouteCollection implements \IteratorAggregate
         // remove all routes with the same name in all existing collections
         foreach (array_keys($collection->all()) as $name) {
             $this->remove($name);
+        }
+
+        // Allow child collection to have a different pattern
+        if (!$collection->getHostnamePattern()) {
+            $collection->setHostnamePattern($hostnamePattern);
         }
 
         $this->routes[] = $collection;
@@ -255,5 +262,22 @@ class RouteCollection implements \IteratorAggregate
     public function addResource(ResourceInterface $resource)
     {
         $this->resources[] = $resource;
+    }
+
+    public function getHostnamePattern()
+    {
+        return $this->hostnamePattern;
+    }
+
+    public function setHostnamePattern($pattern)
+    {
+        $this->hostnamePattern = $pattern;
+        foreach ($this->routes as $name => $route) {
+
+            // Allow individual routes to have a different pattern
+            if (!$route->getHostnamePattern()) {
+                $route->setHostnamePattern($pattern);
+            }
+        }
     }
 }

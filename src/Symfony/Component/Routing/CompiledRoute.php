@@ -23,6 +23,10 @@ class CompiledRoute
     private $tokens;
     private $staticPrefix;
     private $regex;
+    private $pathVariables;
+    private $hostnameVariables;
+    private $hostnameRegex;
+    private $hostnameTokens;
 
     /**
      * Constructor.
@@ -32,14 +36,77 @@ class CompiledRoute
      * @param string $regex        The regular expression to use to match this route
      * @param array  $tokens       An array of tokens to use to generate URL for this route
      * @param array  $variables    An array of variables
+     * @param Route  $route             A original Route instance
+     * @param string $staticPrefix      The static prefix of the compiled route
+     * @param string $regex             The regular expression to use to match this route
+     * @param array  $tokens            An array of tokens to use to generate URL for this route
+     * @param array  $pathVariables     An array of path variables
+     * @param array  $hostnameRegex     Hostname regex
+     * @param array  $hostnameTokens    Hostname tokens
+     * @param array  $hostnameVariables An array of hostname variables
+     * @param array  $variables         An array of variables (variables defined in the path and in the hostname patterns)
      */
-    public function __construct(Route $route, $staticPrefix, $regex, array $tokens, array $variables)
+    public function __construct(Route $route, $staticPrefix, $regex, array $tokens, array $pathVariables, $hostnameRegex = null, array $hostnameTokens = array(), array $hostnameVariables = array(), array $variables = array())
     {
         $this->route = $route;
         $this->staticPrefix = $staticPrefix;
         $this->regex = $regex;
         $this->tokens = $tokens;
+        $this->pathVariables = $pathVariables;
+        $this->hostnameRegex = $hostnameRegex;
+        $this->hostnameTokens = $hostnameTokens;
+        $this->hostnameVariables = $hostnameVariables;
         $this->variables = $variables;
+    }
+
+    /**
+      * Returns the hostname regex
+      *
+      * @return string The hostname regex
+      */
+    public function getHostnameRegex()
+    {
+        return $this->hostnameRegex;
+    }
+
+    /**
+      * Returns the hostname tokens.
+      *
+      * @return array The tokens
+      */
+    public function getHostnameTokens()
+    {
+        return $this->hostnameTokens;
+    }
+
+    /**
+     * Returns the path variables.
+     *
+     * @return array The variables
+     */
+    public function getPathVariables()
+    {
+        return $this->pathVariables;
+    }
+
+    /**
+      * Returns the hostname variables.
+      *
+      * @return array The variables
+      */
+    public function getHostnameVariables()
+    {
+        return $this->hostnameVariables;
+    }
+
+    /**
+      * Returns the hostname pattern.
+      *
+      * @return string The pattern
+      */
+    public function getHostnamePattern()
+    {
+        return $this->route->getHostnamePattern();
     }
 
     /**
